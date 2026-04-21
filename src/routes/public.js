@@ -36,6 +36,8 @@ function commonLocals() {
   };
 }
 
+const ROBUX_AMOUNTS = [1000, 2500, 5000, 10000, 25000, 50000, 100000];
+
 router.get('/', (req, res) => {
   const scripts = listEnabledScripts();
   res.render('home', { ...commonLocals(), scripts });
@@ -51,6 +53,14 @@ router.get('/s/:slug/locker', (req, res) => {
   const script = getScriptBySlug(req.params.slug);
   if (!script) return res.status(404).render('not-found', commonLocals());
   res.render('locker', { ...commonLocals(), script });
+});
+
+router.get('/robux', (req, res) => {
+  res.render('robux', { ...commonLocals(), amounts: ROBUX_AMOUNTS });
+});
+
+router.get('/robux/locker', (req, res) => {
+  res.render('robux-locker', { ...commonLocals(), amounts: ROBUX_AMOUNTS });
 });
 
 // Legacy path redirects (keeps old external links alive).

