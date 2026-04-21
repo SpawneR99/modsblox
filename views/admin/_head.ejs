@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title><%= title %> &mdash; ModsBlox Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Exo+2:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+<div class="admin-shell">
+  <aside class="admin-side">
+    <div class="brand">ModsBlox</div>
+    <nav>
+      <a href="/admin/dashboard" class="<%= typeof currentPath !== 'undefined' && currentPath === 'dashboard' ? 'active' : '' %>"><span class="ico">&#9632;</span> Dashboard</a>
+      <a href="/admin/scripts" class="<%= typeof currentPath !== 'undefined' && currentPath === 'scripts' ? 'active' : '' %>"><span class="ico">&#9776;</span> Scripts</a>
+      <a href="/admin/settings" class="<%= typeof currentPath !== 'undefined' && currentPath === 'settings' ? 'active' : '' %>"><span class="ico">&#9881;</span> Settings</a>
+      <a href="/admin/password" class="<%= typeof currentPath !== 'undefined' && currentPath === 'password' ? 'active' : '' %>"><span class="ico">&#128273;</span> Password</a>
+      <a href="/" target="_blank"><span class="ico">&#8599;</span> View site</a>
+    </nav>
+    <div class="footer">
+      Signed in as<br>
+      <strong><%= admin ? admin.username : '?' %></strong>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-top">
+      <h1><%= title %></h1>
+      <form method="POST" action="/admin/logout" style="margin:0">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="logout-btn" type="submit">Sign out</button>
+      </form>
+    </div>
+    <% if (flash) { %>
+      <div class="flash <%= flash.type %>"><%= flash.message %></div>
+    <% } %>

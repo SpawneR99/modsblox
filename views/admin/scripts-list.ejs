@@ -1,0 +1,59 @@
+<% const currentPath = 'scripts'; %>
+<%- include('_head', { title, currentPath, admin, csrfToken, flash }) %>
+
+<div class="admin-top" style="margin-top:-10px;margin-bottom:20px">
+  <div></div>
+  <a class="btn btn-primary" href="/admin/scripts/new">&#43; New script</a>
+</div>
+
+<div class="card" style="padding:0;overflow:hidden">
+<table class="data">
+  <thead>
+    <tr>
+      <th style="width:60px"></th>
+      <th>Title</th>
+      <th>Slug</th>
+      <th>Niche</th>
+      <th>Hubs</th>
+      <th>Order</th>
+      <th>Status</th>
+      <th style="width:260px;text-align:right">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if (!scripts.length) { %>
+      <tr><td colspan="8" style="text-align:center;color:var(--text-dim);padding:30px">No scripts yet. <a href="/admin/scripts/new">Create the first one &rarr;</a></td></tr>
+    <% } %>
+    <% scripts.forEach(function(s){ %>
+      <tr>
+        <td><img src="<%= s.card_image_url || s.image_url %>" alt="" onerror="this.style.visibility='hidden'"></td>
+        <td>
+          <strong><%= s.title %></strong><br>
+          <span style="color:var(--text-dim);font-size:12px"><%= s.short_name %></span>
+        </td>
+        <td><code style="color:var(--cyan);font-size:12px"><%= s.slug %></code></td>
+        <td><code style="color:var(--yellow);font-size:12px"><%= s.niche %></code></td>
+        <td><%= s.sub_count %></td>
+        <td><%= s.sort_order %></td>
+        <td><span class="pill <%= s.enabled ? 'on' : 'off' %>"><%= s.enabled ? 'enabled' : 'disabled' %></span></td>
+        <td style="text-align:right">
+          <div class="actions-row" style="justify-content:flex-end">
+            <a class="btn btn-secondary small" href="/s/<%= s.slug %>" target="_blank">View</a>
+            <a class="btn btn-ghost small" href="/admin/scripts/<%= s.id %>/edit">Edit</a>
+            <form method="POST" action="/admin/scripts/<%= s.id %>/toggle" style="margin:0">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="btn btn-ghost small" type="submit"><%= s.enabled ? 'Disable' : 'Enable' %></button>
+            </form>
+            <form method="POST" action="/admin/scripts/<%= s.id %>/delete" style="margin:0" onsubmit="return confirm('Delete <%= s.title.replace(/'/g, "\\'") %>? This cannot be undone.')">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+              <button class="btn btn-danger small" type="submit">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+</div>
+
+<%- include('_foot') %>

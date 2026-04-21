@@ -1,0 +1,29 @@
+<div class="grid-bg"><canvas id="gridCanvas"></canvas></div>
+<script>
+(function(){
+  const c=document.getElementById('gridCanvas'); if(!c) return;
+  const ctx=c.getContext('2d'); let w,h,t=0;
+  function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight}
+  window.addEventListener('resize',resize); resize();
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const isLight=document.documentElement.classList.contains('light-mode');
+    ctx.strokeStyle=isLight?'rgba(0,119,170,0.06)':'rgba(255,45,149,0.08)';
+    ctx.lineWidth=1;
+    const sp=40,ho=h*0.4;
+    for(let x=-w;x<w*2;x+=sp){
+      const ox=((x+t*0.5)%sp+sp)%sp-sp/2;
+      ctx.beginPath();ctx.moveTo(w/2+(ox-w/2)*0.1,ho);ctx.lineTo(x,h);ctx.stroke();
+    }
+    for(let y=0;y<20;y++){
+      const yP=ho+Math.pow(y/20,2)*(h-ho);
+      ctx.beginPath();ctx.moveTo(0,yP);ctx.lineTo(w,yP);ctx.stroke();
+    }
+    ctx.strokeStyle=isLight?'rgba(0,119,170,0.03)':'rgba(0,255,240,0.04)';
+    for(let x=0;x<w;x+=sp){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,ho);ctx.stroke();}
+    for(let y=0;y<ho;y+=sp){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+    t+=0.5;requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>

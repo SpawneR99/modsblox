@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<% const pageTitle = siteName + ' - Free Roblox Scripts'; %>
+<%- include('partials/head', { pageTitle }) %>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0221;--bg2:#1a0a3e;--pink:#ff2d95;--cyan:#00fff0;--yellow:#ffe600;--card-bg:#160b30;--text:#e0d6ff;--text-dim:#8a7fad;--sidebar-w:240px}
+html.light-mode{--bg:#f0edf8;--bg2:#e4e0ed;--pink:#d6006e;--cyan:#0077aa;--yellow:#b38600;--card-bg:#ffffff;--text:#1a0a3e;--text-dim:#5a4f7a}
+html.light-mode body::after{display:none}
+html.light-mode .grid-bg{opacity:0.15}
+html.light-mode .sidebar{background:linear-gradient(180deg,#f8f6fc 0%,#ede8f5 100%);border-right:1px solid rgba(0,119,170,0.15)}
+html.light-mode .sidebar .logo-area h2{color:var(--pink);text-shadow:none;animation:none}
+html.light-mode .nav-items a{color:var(--text-dim)}
+html.light-mode .nav-items a:hover,html.light-mode .nav-items a.active{color:var(--cyan);background:rgba(0,119,170,0.06)}
+html.light-mode .nav-items a .icon svg{stroke:var(--text-dim)}
+html.light-mode .nav-items a:hover .icon svg,html.light-mode .nav-items a.active .icon svg{stroke:var(--cyan);filter:none}
+html.light-mode .nav-items a.active{border-left-color:var(--cyan);box-shadow:none}
+html.light-mode .sidebar-footer{border-top:1px solid rgba(0,119,170,0.12)}
+html.light-mode .header{background:rgba(248,246,252,0.92);border-bottom:1px solid rgba(0,119,170,0.1)}
+html.light-mode .header .logo{color:var(--pink);text-shadow:none}
+html.light-mode .search-box input{background:rgba(0,0,0,0.04);border:1px solid rgba(0,119,170,0.2);color:var(--text)}
+html.light-mode .search-box input:focus{border-color:var(--cyan);box-shadow:0 0 8px rgba(0,119,170,0.12)}
+html.light-mode .dark-toggle{border-color:var(--text-dim);color:var(--text-dim)}
+html.light-mode .dark-toggle:hover{background:var(--text-dim);color:#fff}
+html.light-mode .hero h1{color:var(--cyan);text-shadow:none}
+html.light-mode .game-card{border:1px solid rgba(0,0,0,0.08);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+html.light-mode .game-card:hover{border-color:var(--pink);box-shadow:0 4px 20px rgba(214,0,110,0.12)}
+html.light-mode .game-card img{border-bottom:2px solid rgba(0,119,170,0.08)}
+html.light-mode .game-card .card-body h3{color:var(--cyan)}
+html.light-mode .game-card .card-body .status{color:var(--yellow)}
+html.light-mode .game-card .card-body .status .dot{background:var(--yellow)}
+html.light-mode .info-section h1{color:var(--cyan);text-shadow:none}
+html.light-mode .info-section h2{color:var(--pink)}
+html.light-mode .info-section a{color:var(--pink)}
+html.light-mode .contact-form input,html.light-mode .contact-form textarea{background:rgba(0,0,0,0.03);border:1px solid rgba(0,119,170,0.18);color:var(--text)}
+html.light-mode .contact-form input:focus,html.light-mode .contact-form textarea:focus{border-color:var(--cyan)}
+html.light-mode .footer{border-top:1px solid rgba(0,0,0,0.08)}
+html.light-mode .footer a{color:var(--pink)}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden}
+.grid-bg canvas{width:100%;height:100%}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+.sidebar{position:fixed;left:0;top:0;width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,#160b30 0%,#0d0221 100%);border-right:1px solid rgba(255,45,149,0.2);z-index:100;display:flex;flex-direction:column;padding:20px 0;transition:transform .3s}
+.sidebar .logo-area{padding:20px;text-align:center;margin-bottom:20px}
+.sidebar .logo-area h2{font-family:'Press Start 2P',cursive;font-size:14px;color:var(--pink);text-shadow:0 0 10px var(--pink),0 0 20px var(--pink),0 0 40px var(--pink);animation:neonFlicker 3s infinite}
+@keyframes neonFlicker{0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 10px var(--pink),0 0 20px var(--pink),0 0 40px var(--pink)}20%,24%,55%{text-shadow:none}}
+.nav-items{list-style:none;flex:1}
+.nav-items li{margin:4px 12px}
+.nav-items a{display:flex;align-items:center;gap:10px;padding:12px 16px;color:var(--text-dim);text-decoration:none;font-weight:600;border-radius:8px;transition:all .2s;font-size:14px}
+.nav-items a:hover,.nav-items a.active{color:var(--cyan);background:rgba(0,255,240,0.08)}
+.nav-items a.active{border-left:3px solid var(--cyan);box-shadow:inset 0 0 20px rgba(0,255,240,0.05)}
+.nav-items a .icon{width:20px;height:20px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center}
+.nav-items a .icon svg{width:20px;height:20px;stroke:var(--text-dim);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:all .2s;filter:drop-shadow(0 0 2px transparent)}
+.nav-items a:hover .icon svg,.nav-items a.active .icon svg{stroke:var(--cyan);filter:drop-shadow(0 0 4px var(--cyan)) drop-shadow(0 0 8px rgba(0,255,240,0.3))}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,45,149,0.15);text-align:center}
+.main{margin-left:var(--sidebar-w);position:relative;z-index:1;min-height:100vh}
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 30px;background:rgba(13,2,33,0.8);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,45,149,0.15);position:sticky;top:0;z-index:50}
+.header .logo{font-family:'Press Start 2P',cursive;font-size:18px;color:var(--pink);text-shadow:0 0 10px var(--pink),0 0 20px rgba(255,45,149,0.5)}
+.header-right{display:flex;align-items:center;gap:16px}
+.search-box{position:relative}
+.search-box input{background:rgba(255,255,255,0.06);border:1px solid rgba(0,255,240,0.2);border-radius:8px;padding:10px 16px 10px 40px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;width:260px;outline:none;transition:border-color .2s}
+.search-box input:focus{border-color:var(--cyan);box-shadow:0 0 15px rgba(0,255,240,0.15)}
+.search-box::before{content:'\1F50D';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px}
+.dark-toggle{background:none;border:2px solid var(--yellow);border-radius:8px;padding:8px 14px;color:var(--yellow);cursor:pointer;font-family:'Exo 2',sans-serif;font-weight:600;font-size:13px;transition:all .2s}
+.dark-toggle:hover{background:var(--yellow);color:var(--bg)}
+.content{padding:30px}
+.section{display:none}
+.section.active{display:block}
+.hero{text-align:center;margin-bottom:40px;padding:40px 20px}
+.hero h1{font-family:'Press Start 2P',cursive;font-size:24px;color:var(--cyan);text-shadow:0 0 10px var(--cyan),0 0 30px rgba(0,255,240,0.4);margin-bottom:16px;line-height:1.6}
+.hero p{font-size:16px;color:var(--text-dim);max-width:600px;margin:0 auto}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;padding:10px 0}
+.game-card{background:var(--card-bg);border:1px solid rgba(255,45,149,0.15);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--text);transition:all .3s;position:relative}
+.game-card:hover{transform:translateY(-4px);border-color:var(--pink);box-shadow:0 0 20px rgba(255,45,149,0.3),0 0 40px rgba(255,45,149,0.1)}
+.game-card img{width:100%;height:150px;object-fit:cover;border-bottom:2px solid rgba(0,255,240,0.1)}
+.game-card .card-body{padding:14px}
+.game-card .card-body h3{font-family:'Press Start 2P',cursive;font-size:10px;margin-bottom:8px;color:var(--cyan)}
+.game-card .card-body .status{font-size:11px;color:var(--yellow);display:flex;align-items:center;gap:6px}
+.game-card .card-body .status .dot{width:6px;height:6px;border-radius:50%;background:var(--yellow);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.info-section{max-width:700px;margin:0 auto;padding:30px}
+.info-section h1{font-family:'Press Start 2P',cursive;font-size:20px;color:var(--cyan);margin-bottom:24px;text-shadow:0 0 10px var(--cyan)}
+.info-section p,.info-section li{font-size:15px;line-height:1.8;color:var(--text-dim);margin-bottom:12px}
+.info-section a{color:var(--pink)}
+.info-section h2{font-family:'Press Start 2P',cursive;font-size:13px;color:var(--pink);margin:24px 0 12px}
+.contact-form{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.contact-form input,.contact-form textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(0,255,240,0.2);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;outline:none}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--cyan)}
+.contact-form textarea{min-height:120px;resize:vertical}
+.contact-form button{background:linear-gradient(135deg,var(--pink),#ff6ec7);border:none;border-radius:8px;padding:14px;color:#fff;font-family:'Press Start 2P',cursive;font-size:11px;cursor:pointer;transition:all .2s}
+.contact-form button:hover{box-shadow:0 0 20px rgba(255,45,149,0.5)}
+.footer{text-align:center;padding:30px;border-top:1px solid rgba(255,45,149,0.1);margin-top:40px}
+.footer p{font-size:12px;color:var(--text-dim);line-height:1.8}
+.footer a{color:var(--pink)}
+.menu-toggle{display:none;background:none;border:none;color:var(--pink);font-size:24px;cursor:pointer;z-index:200}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menu-toggle{display:block}
+  .header .logo{font-size:14px}
+  .search-box input{width:160px}
+  .games-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .hero h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+<%- include('partials/grid-bg') %>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo-area"><h2><%= siteName %></h2></div>
+  <ul class="nav-items">
+    <li><a href="#home" class="nav-link active" data-section="home"><span class="icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a></li>
+    <li><a href="#about" class="nav-link" data-section="about"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></span> About</a></li>
+    <li><a href="#contact" class="nav-link" data-section="contact"><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></span> Contact</a></li>
+    <li><a href="#terms" class="nav-link" data-section="terms"><span class="icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></span> Terms</a></li>
+  </ul>
+  <div class="sidebar-footer"></div>
+</aside>
+
+<div class="main">
+  <header class="header">
+    <button class="menu-toggle" id="menuToggle">&#9776;</button>
+    <div class="logo"><%= siteName %></div>
+    <div class="header-right">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search scripts...">
+      </div>
+      <button class="dark-toggle" id="darkToggle">&#9728;&#65039; LIGHT</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="section active" id="section-home">
+      <div class="hero">
+        <h1>FREE ROBLOX SCRIPTS</h1>
+        <p>The ultimate collection of premium scripts for your favorite Roblox games. Updated daily, 100% free.</p>
+      </div>
+      <div class="games-grid" id="gamesGrid">
+        <% scripts.forEach(function(s){ %>
+          <a href="/s/<%= s.slug %>" class="game-card" data-name="<%= s.short_name %>">
+            <img src="<%= s.card_image_url || s.image_url %>" alt="<%= s.short_name %>" loading="lazy">
+            <div class="card-body"><h3><%= s.title %></h3><div class="status"><span class="dot"></span>ONLINE</div></div>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="section" id="section-about">
+      <div class="info-section">
+        <h1>ABOUT <%= siteName.toUpperCase() %></h1>
+        <p><%= siteName %> is your go-to source for premium Roblox scripts, completely free. We curate and test every script to ensure compatibility and safety.</p>
+        <h2>OUR MISSION</h2>
+        <p>We believe every player deserves access to the best game enhancements. Our team works around the clock to bring you the latest scripts for the most popular Roblox games.</p>
+        <h2>HOW IT WORKS</h2>
+        <ul>
+          <li>Browse our collection of scripts by game</li>
+          <li>Enter your Roblox Username to connect</li>
+          <li>Select your preferred script hub</li>
+          <li>Complete a quick verification to unlock</li>
+          <li>Enjoy your enhanced gameplay experience</li>
+        </ul>
+        <h2>STAY UPDATED</h2>
+        <p>We update our scripts daily to ensure compatibility with the latest Roblox updates. Bookmark <%= siteName %> and check back regularly for new additions.</p>
+      </div>
+    </div>
+
+    <div class="section" id="section-contact">
+      <div class="info-section">
+        <h1>CONTACT US</h1>
+        <p>Have a question, suggestion, or issue? Reach out and we'll get back to you as soon as possible.</p>
+        <form class="contact-form" onsubmit="event.preventDefault();alert('Message sent! We will get back to you soon.');">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <input type="text" placeholder="Subject">
+          <textarea placeholder="Your Message..." required></textarea>
+          <button type="submit">SEND MESSAGE</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="section" id="section-terms">
+      <div class="info-section">
+        <h1>TERMS OF SERVICE</h1>
+        <h2>1. ACCEPTANCE</h2>
+        <p>By accessing and using <%= siteName %>, you agree to be bound by these Terms of Service. If you do not agree, please do not use our website.</p>
+        <h2>2. DISCLAIMER</h2>
+        <p><%= siteName %> is an independent platform and is not affiliated with, endorsed by, or connected to Roblox Corporation. All game names, logos, and trademarks are the property of their respective owners.</p>
+        <h2>3. USE OF SCRIPTS</h2>
+        <p>Scripts provided on this platform are for educational purposes only. Users are responsible for how they use the scripts.</p>
+        <h2>4. NO WARRANTY</h2>
+        <p>All scripts and content are provided "as is" without warranty of any kind.</p>
+        <h2>5. LIMITATION OF LIABILITY</h2>
+        <p><%= siteName %> shall not be liable for any damages arising from the use or inability to use our services.</p>
+        <h2>6. THIRD-PARTY LINKS</h2>
+        <p>Our site may contain links to third-party websites. We are not responsible for the content or practices of these external sites.</p>
+        <h2>7. YOUR PRIVACY &amp; ACCOUNT SAFETY</h2>
+        <p><%= siteName %> will <strong>never</strong> ask for your Roblox password, email, or any other personal account information.</p>
+        <h2>8. CHANGES</h2>
+        <p>We reserve the right to modify these terms at any time.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; <%= new Date().getFullYear() %> <%= siteName %> &mdash; Not affiliated with Roblox Corporation.<br>All scripts are provided for educational purposes only.<br><a href="#terms" class="nav-link" data-section="terms">Terms of Service</a></p>
+  </footer>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('img').forEach(function(img){
+    img.onerror=function(){
+      this.onerror=null;
+      this.src='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23160b30"/><text x="100" y="90" text-anchor="middle" fill="%23ff2d95" font-family="sans-serif" font-size="40">&#127918;</text><text x="100" y="130" text-anchor="middle" fill="%2300fff0" font-family="sans-serif" font-size="14">'+this.alt+'</text></svg>');
+    };
+  });
+});
+document.querySelectorAll('.nav-link').forEach(link=>{
+  link.addEventListener('click',function(e){
+    e.preventDefault();
+    const sec=this.dataset.section; if(!sec)return;
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+    document.getElementById('section-'+sec).classList.add('active');
+    this.classList.add('active');
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open')});
+document.getElementById('searchInput').addEventListener('input',function(){
+  const q=this.value.toLowerCase();
+  document.querySelectorAll('.game-card').forEach(card=>{
+    const name=(card.dataset.name||'').toLowerCase();
+    card.style.display=name.includes(q)?'':'none';
+  });
+});
+const toggle=document.getElementById('darkToggle');
+if(localStorage.getItem('<%= siteName %>-light')==='true'){
+  document.documentElement.classList.add('light-mode');
+  toggle.textContent='\u{1F319} DARK';
+}
+toggle.addEventListener('click',()=>{
+  document.documentElement.classList.toggle('light-mode');
+  const isLight=document.documentElement.classList.contains('light-mode');
+  localStorage.setItem('<%= siteName %>-light',isLight);
+  toggle.textContent=isLight?'\u{1F319} DARK':'\u2600\uFE0F LIGHT';
+});
+</script>
+</body>
+</html>

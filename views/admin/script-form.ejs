@@ -1,0 +1,138 @@
+<% const currentPath = 'scripts'; %>
+<%- include('_head', { title, currentPath, admin, csrfToken, flash }) %>
+
+<form method="POST" action="<%= script.id ? '/admin/scripts/' + script.id + '/edit' : '/admin/scripts/new' %>" enctype="multipart/form-data">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <div class="card">
+    <h2>Basic</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Title</label>
+        <input type="text" name="title" value="<%= script.title %>" required maxlength="120">
+        <span class="hint">Shown on the script card and intro page.</span>
+      </div>
+      <div class="field">
+        <label>Short name</label>
+        <input type="text" name="short_name" value="<%= script.short_name %>" maxlength="60">
+      </div>
+      <div class="field">
+        <label>URL slug</label>
+        <input type="text" name="slug" value="<%= script.slug %>" required pattern="[a-z0-9-]+" maxlength="64">
+        <span class="hint">Lowercase letters, numbers, dashes. Becomes /s/&lt;slug&gt;</span>
+      </div>
+      <div class="field">
+        <label>Niche (tracking sub-id)</label>
+        <input type="text" name="niche" value="<%= script.niche %>" required maxlength="64">
+        <span class="hint">Sent as s1 (AdBlueMedia) / aff_sub4 (OGAds).</span>
+      </div>
+      <div class="field">
+        <label>Virtual path (umami)</label>
+        <input type="text" name="vpath" value="<%= script.vpath %>" maxlength="120">
+      </div>
+      <div class="field">
+        <label>Sort order</label>
+        <input type="number" name="sort_order" value="<%= script.sort_order %>" min="0" max="9999">
+      </div>
+      <div class="field full">
+        <label class="inline-check">
+          <input type="checkbox" name="enabled" value="1" <%= script.enabled ? 'checked' : '' %>>
+          <span>Enabled (shown on home page)</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Images</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Image URL</label>
+        <input type="url" name="image_url" value="<%= script.image_url %>" placeholder="https://...">
+        <span class="hint">Large image used on the script intro page.</span>
+      </div>
+      <div class="field">
+        <label>Card image URL <span style="color:var(--text-dim)">(optional)</span></label>
+        <input type="url" name="card_image_url" value="<%= script.card_image_url || '' %>" placeholder="Leave empty to reuse image URL">
+      </div>
+      <div class="field full">
+        <label>Or upload an icon</label>
+        <input type="file" name="icon" accept="image/*">
+        <span class="hint">If you upload, the image URL above will be replaced with the uploaded file. Max 2&nbsp;MB.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Copy</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Badge</label>
+        <input type="text" name="badge" value="<%= script.badge %>" maxlength="40">
+      </div>
+      <div class="field">
+        <label>Intro subtitle</label>
+        <input type="text" name="intro_subtitle" value="<%= script.intro_subtitle %>" maxlength="120">
+      </div>
+      <div class="field">
+        <label>Hub label (step 2)</label>
+        <input type="text" name="hub_label" value="<%= script.hub_label %>" maxlength="60">
+      </div>
+      <div class="field">
+        <label>Install checkbox label</label>
+        <input type="text" name="install_label" value="<%= script.install_label || '' %>" maxlength="120" placeholder="e.g. Install My Script (leave empty to hide checkbox)">
+      </div>
+      <div class="field">
+        <label>Activation-key prefix</label>
+        <input type="text" name="key_prefix" value="<%= script.key_prefix %>" maxlength="16" pattern="[A-Z0-9_-]+">
+      </div>
+      <div class="field">
+        <label>Video guide URL <span style="color:var(--text-dim)">(optional)</span></label>
+        <input type="url" name="video_url" value="<%= script.video_url || '' %>">
+      </div>
+      <div class="field full">
+        <label>Description</label>
+        <textarea name="description" maxlength="2000"><%= script.description %></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Sub-scripts / hubs</h2>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:14px">Options shown in the dropdown on step 2 of the script page.</p>
+    <div id="subRows">
+      <% (subs || []).forEach(function(s){ %>
+        <div class="sub-row">
+          <input type="text" name="sub_names" value="<%= s.name %>" maxlength="80">
+          <button class="rm" type="button" onclick="this.parentNode.remove()">&times;</button>
+        </div>
+      <% }) %>
+      <% if (!subs || !subs.length) { %>
+        <div class="sub-row">
+          <input type="text" name="sub_names" maxlength="80" placeholder="e.g. ModsBlox">
+          <button class="rm" type="button" onclick="this.parentNode.remove()">&times;</button>
+        </div>
+      <% } %>
+    </div>
+    <button type="button" class="btn btn-secondary small" onclick="addSub()">&#43; Add hub / version</button>
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-primary" type="submit"><%= script.id ? 'Save changes' : 'Create script' %></button>
+    <a class="btn btn-ghost" href="/admin/scripts">Cancel</a>
+  </div>
+</form>
+
+<script>
+function addSub(){
+  const wrap=document.getElementById('subRows');
+  const div=document.createElement('div');
+  div.className='sub-row';
+  div.innerHTML='<input type="text" name="sub_names" maxlength="80"><button class="rm" type="button">&times;</button>';
+  div.querySelector('.rm').addEventListener('click',()=>div.remove());
+  wrap.appendChild(div);
+  div.querySelector('input').focus();
+}
+</script>
+
+<%- include('_foot') %>

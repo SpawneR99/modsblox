@@ -1,0 +1,9 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= typeof pageTitle !== 'undefined' ? pageTitle : (siteName + ' - Free Roblox Scripts') %></title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<% if (typeof analyticsScript !== 'undefined' && analyticsScript && typeof analyticsId !== 'undefined' && analyticsId) { %>
+<script defer src="<%= analyticsScript %>" data-website-id="<%= analyticsId %>"></script>
+<% } %>

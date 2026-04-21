@@ -1,0 +1,31 @@
+<% const currentPath = 'dashboard'; %>
+<%- include('_head', { title, currentPath, admin, csrfToken, flash }) %>
+
+<div class="stats-grid">
+  <div class="stat-card"><div class="lbl">Total scripts</div><div class="num"><%= totalScripts %></div></div>
+  <div class="stat-card"><div class="lbl">Enabled</div><div class="num"><%= enabledScripts %></div></div>
+  <div class="stat-card"><div class="lbl">Sub-scripts / hubs</div><div class="num"><%= totalSubs %></div></div>
+  <div class="stat-card"><div class="lbl">Offer provider</div><div class="num" style="font-size:15px"><%= provider.toUpperCase() %></div></div>
+  <div class="stat-card"><div class="lbl">Offers</div><div class="num" style="font-size:15px">min <%= offerMin %> / max <%= offerMax %></div></div>
+</div>
+
+<div class="card">
+  <h2>Quick actions</h2>
+  <div class="actions-row">
+    <a class="btn btn-primary" href="/admin/scripts/new">&#43; New script</a>
+    <a class="btn btn-secondary" href="/admin/scripts">Manage scripts</a>
+    <a class="btn btn-secondary" href="/admin/settings">Offer settings</a>
+    <a class="btn btn-ghost" href="/admin/password">Change password</a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Tips</h2>
+  <p style="color:var(--text-dim);line-height:1.6">
+    &bull; Every script is rendered from the database &mdash; add, edit or disable them from the <strong>Scripts</strong> page.<br>
+    &bull; The <strong>Settings</strong> page lets you switch the offer feed between AdBlueMedia and OGAds without touching any code.<br>
+    &bull; API credentials live in environment variables only. Nothing sensitive is stored in the database.
+  </p>
+</div>
+
+<%- include('_foot') %>

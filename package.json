@@ -1,0 +1,26 @@
+{
+  "name": "modsblox",
+  "version": "2.0.0",
+  "description": "ModsBlox - Roblox scripts hub with secure admin dashboard and pluggable offer providers",
+  "main": "server.js",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "hash": "node scripts-cli/hash-password.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.3.0",
+    "better-sqlite3-session-store": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "helmet": "^7.2.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}

@@ -1,0 +1,61 @@
+<% const currentPath = 'settings'; %>
+<%- include('_head', { title, currentPath, admin, csrfToken, flash }) %>
+
+<form method="POST" action="/admin/settings">
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+  <div class="card">
+    <h2>Offer provider</h2>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px">
+      Pick which offer network powers the task wall. API credentials are read from environment variables &mdash; never from the database.
+    </p>
+    <div class="segmented">
+      <label>
+        <input type="radio" name="offer_provider" value="adbluemedia" <%= settings.offer_provider === 'adbluemedia' ? 'checked' : '' %>>
+        <span>AdBlueMedia <span class="provider-status <%= providers.adbluemedia ? 'on' : 'off' %>"><%= providers.adbluemedia ? 'env OK' : 'env missing' %></span></span>
+      </label>
+      <label>
+        <input type="radio" name="offer_provider" value="ogads" <%= settings.offer_provider === 'ogads' ? 'checked' : '' %>>
+        <span>OGAds <span class="provider-status <%= providers.ogads ? 'on' : 'off' %>"><%= providers.ogads ? 'env OK' : 'env missing' %></span></span>
+      </label>
+    </div>
+    <div class="form-grid" style="margin-top:20px">
+      <div class="field">
+        <label>Max offers returned</label>
+        <input type="number" name="offer_max" value="<%= settings.offer_max %>" min="1" max="10">
+      </div>
+      <div class="field">
+        <label>Min offers required to unlock</label>
+        <input type="number" name="offer_min" value="<%= settings.offer_min %>" min="1" max="10">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Site</h2>
+    <div class="form-grid">
+      <div class="field">
+        <label>Site name</label>
+        <input type="text" name="site_name" value="<%= settings.site_name %>" maxlength="60">
+      </div>
+      <div class="field">
+        <label>Video guide URL (locker page)</label>
+        <input type="url" name="video_guide_url" value="<%= settings.video_guide_url %>" placeholder="Leave empty to hide section">
+      </div>
+      <div class="field">
+        <label>Umami analytics script URL</label>
+        <input type="url" name="analytics_script_url" value="<%= settings.analytics_script_url %>">
+      </div>
+      <div class="field">
+        <label>Umami website id</label>
+        <input type="text" name="analytics_website_id" value="<%= settings.analytics_website_id %>" maxlength="80">
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-primary" type="submit">Save settings</button>
+  </div>
+</form>
+
+<%- include('_foot') %>
