@@ -27,11 +27,25 @@ router.get('/offers', offersLimiter, async (req, res) => {
     if (!niche) niche = getSetting('site_name', 'ModsBlox');
 
     const result = await getOffers(req, { niche });
+
+    if (result.mode === 'button') {
+      return res.json({
+        success: true,
+        provider: result.provider,
+        mode: 'button',
+        ctaUrl: result.ctaUrl,
+        min: result.min,
+        max: result.max,
+        offers: [],
+      });
+    }
+
     if (!result.offers || result.offers.length < result.min) {
       return res.json({
         success: false,
         error: 'Not enough offers available',
         provider: result.provider,
+        mode: result.mode || 'list',
         min: result.min,
         max: result.max,
         offers: [],
@@ -40,6 +54,7 @@ router.get('/offers', offersLimiter, async (req, res) => {
     res.json({
       success: true,
       provider: result.provider,
+      mode: result.mode || 'list',
       min: result.min,
       max: result.max,
       offers: result.offers,

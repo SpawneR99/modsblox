@@ -52,6 +52,16 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 .offer-card .offer-info p{font-size:12px;color:var(--text-dim);line-height:1.6;white-space:pre-line;word-break:break-word}
 .offer-card .offer-arrow{color:var(--text-dim);font-size:18px;align-self:center;flex-shrink:0}
 .loading-offers{text-align:center;padding:30px;color:var(--text-dim);font-size:13px}
+.cta-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;padding:6px 0 4px}
+.cta-btn{position:relative;display:inline-block;width:100%;max-width:420px;text-align:center;padding:22px 28px;border-radius:14px;font-family:'Press Start 2P',cursive;font-size:15px;letter-spacing:.5px;color:#06110a;text-decoration:none;background:linear-gradient(135deg,var(--green),var(--cyan));box-shadow:0 0 28px rgba(0,230,118,.4),0 0 12px rgba(0,255,240,.3) inset;overflow:hidden;animation:ctaPulse 1.4s ease-in-out infinite;will-change:transform,box-shadow;cursor:pointer}
+.cta-btn span.arrow{margin-left:8px;display:inline-block;animation:ctaArrow 1s ease-in-out infinite}
+.cta-btn:hover{transform:scale(1.03);animation-play-state:paused}
+.cta-btn::after{content:'';position:absolute;top:0;left:-60%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-20deg);animation:ctaShine 2.2s linear infinite;pointer-events:none}
+.cta-sub{font-size:12px;color:var(--text-dim);font-style:italic;text-align:center;letter-spacing:.3px}
+.cta-sub strong{color:var(--yellow);font-style:normal;font-family:'Press Start 2P',cursive;font-size:9px;margin-right:6px}
+@keyframes ctaPulse{0%,100%{transform:scale(1);box-shadow:0 0 28px rgba(0,230,118,.4),0 0 12px rgba(0,255,240,.3) inset}50%{transform:scale(1.03);box-shadow:0 0 46px rgba(0,255,240,.7),0 0 18px rgba(0,230,118,.55) inset}}
+@keyframes ctaShine{0%{left:-60%}100%{left:120%}}
+@keyframes ctaArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
 .how-to{background:var(--card-bg);border:1px solid rgba(255,45,149,.12);border-radius:12px;padding:20px;margin-bottom:24px}
 .how-to h3{font-family:'Press Start 2P',cursive;font-size:10px;color:var(--cyan);margin-bottom:16px}
 .how-to ol{padding-left:20px}
@@ -104,7 +114,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
   <% } %>
 
   <div class="tasks-section">
-    <h3>&#9889; COMPLETE <%= offerMin %> TASKS TO VERIFY</h3>
+    <h3 id="tasksHeading">&#9889; COMPLETE <%= offerMin %> TASKS TO VERIFY</h3>
     <div class="offers-grid" id="offersGrid">
       <div class="loading-offers">Loading verification tasks...</div>
     </div>
@@ -112,7 +122,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 
   <div class="how-to">
     <h3>HOW TO VERIFY</h3>
-    <ol>
+    <ol id="howToList">
       <li>Click on any task from the list above</li>
       <li>Follow the instructions on the offer page</li>
       <li>Complete the task fully (install app, finish survey, etc.)</li>
@@ -132,7 +142,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
 
 <script>
 const NICHE='ModsBloxRobux';
-const MIN_COMPLETE=<%= offerMin %>;
+let MIN_COMPLETE=<%= offerMin %>;
 const VPATH='/robux/locker';
 if(typeof umami!=='undefined')umami.track(p=>({...p,url:VPATH}));
 
@@ -163,12 +173,40 @@ setInterval(()=>{
 
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
+function renderButtonMode(ctaUrl){
+  MIN_COMPLETE=1;
+  const grid=document.getElementById('offersGrid');
+  const heading=document.getElementById('tasksHeading');
+  const howTo=document.getElementById('howToList');
+  if(heading)heading.innerHTML='&#9889; LAST STEP TO VERIFY';
+  grid.innerHTML=
+    '<div class="cta-wrap">'+
+      '<a class="cta-btn" id="ctaBtn" href="'+escapeHtml(ctaUrl)+'" target="_blank" rel="noopener noreferrer">Click Here<span class="arrow">&rarr;</span></a>'+
+      '<div class="cta-sub"><strong>LAST STEP</strong>Tap the button to reveal your tasks</div>'+
+    '</div>';
+  const btn=document.getElementById('ctaBtn');
+  if(btn)btn.addEventListener('click',()=>trackOffer('__ogads_cta__'));
+  if(howTo){
+    howTo.innerHTML=
+      '<li>Click the glowing <strong>Click Here</strong> button above</li>'+
+      '<li>A new page opens with a short list of tasks</li>'+
+      '<li>Pick one task and follow the steps shown there</li>'+
+      '<li>Complete the task fully (install app, finish survey, etc.)</li>'+
+      '<li>Return here &mdash; your Robux will be delivered automatically</li>';
+  }
+}
+
 async function loadOffers(){
   const grid=document.getElementById('offersGrid');
   try{
     const res=await fetch('/api/offers?niche='+encodeURIComponent(NICHE));
     if(!res.ok)throw new Error('HTTP '+res.status);
     const d=await res.json();
+    if(d&&d.success&&d.mode==='button'&&d.ctaUrl){
+      renderButtonMode(d.ctaUrl);
+      checkUnlock();
+      return;
+    }
     if(!d.success||!d.offers||!d.offers.length)throw new Error(d.error||'No offers');
     grid.innerHTML='';
     d.offers.forEach(o=>{

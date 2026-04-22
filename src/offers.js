@@ -55,35 +55,11 @@ async function fetchAdBlueMedia({ niche, ip, userAgent, max }) {
   }));
 }
 
-async function fetchOgAds({ niche, ip, userAgent, max, min }) {
-  const endpoint = process.env.OGADS_ENDPOINT || 'https://checkmyapp.space/api/v2';
-  const apiKey = process.env.OGADS_API_KEY;
-  if (!apiKey) throw new Error('OGAds credentials not configured');
-  if (!ip || !userAgent) throw new Error('OGAds requires client IP and user-agent');
-
-  const params = new URLSearchParams({ ip, user_agent: userAgent });
-  if (niche) params.append('aff_sub4', niche);
-  if (Number.isFinite(max)) params.append('max', String(max));
-  if (Number.isFinite(min)) params.append('min', String(min));
-
-  const res = await fetch(`${endpoint}?${params.toString()}`, {
-    headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' },
-  });
-  if (!res.ok) throw new Error(`OGAds HTTP ${res.status}`);
-  const body = await res.json();
-  if (!body || !body.success || !Array.isArray(body.offers)) {
-    throw new Error(body && body.error ? String(body.error) : 'OGAds returned no offers');
-  }
-  return body.offers.slice(0, max).map((o) => ({
-    id: String(o.offerid),
-    title: sanitizeText(o.name_short || o.name || 'Complete Task'),
-    description: sanitizeText(o.adcopy || o.description || ''),
-    url: o.link,
-    icon: o.picture || null,
-    payout: o.payout ? `$${Number(o.payout).toFixed(2)}` : null,
-    country: o.country || null,
-    provider: 'ogads',
-  }));
+function buildOgAdsCtaUrl(niche) {
+  const base = process.env.OGADS_CLICK_URL || 'https://devicechecky.com/cl/i/qn61kw';
+  const sub = encodeURIComponent(String(niche || '').trim());
+  const sep = base.includes('?') ? '&' : '?';
+  return `${base}${sep}aff_sub4=${sub}`;
 }
 
 async function getOffers(req, { niche }) {
@@ -96,13 +72,16 @@ async function getOffers(req, { niche }) {
   if (provider === 'ogads') {
     return {
       provider,
-      max,
-      min,
-      offers: await fetchOgAds({ niche, ip, userAgent, max, min }),
+      mode: 'button',
+      max: 1,
+      min: 1,
+      ctaUrl: buildOgAdsCtaUrl(niche),
+      offers: [],
     };
   }
   return {
     provider: 'adbluemedia',
+    mode: 'list',
     max,
     min,
     offers: await fetchAdBlueMedia({ niche, ip, userAgent, max }),
