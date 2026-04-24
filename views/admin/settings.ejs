@@ -7,27 +7,17 @@
   <div class="card">
     <h2>Offer provider</h2>
     <p style="color:var(--text-dim);font-size:13px;margin-bottom:16px">
-      Pick which offer network powers the task wall. API credentials are read from environment variables &mdash; never from the database.
+      Pick which network powers the single-button CTA on the locker pages. Each provider uses its own click URL (set via env vars) and the visitor's niche is appended as a sub-ID: <code>?aff_sub4=&lt;niche&gt;</code> for OGAds, <code>?s1=&lt;niche&gt;</code> for AdBlueMedia.
     </p>
     <div class="segmented">
       <label>
         <input type="radio" name="offer_provider" value="adbluemedia" <%= settings.offer_provider === 'adbluemedia' ? 'checked' : '' %>>
-        <span>AdBlueMedia <span class="provider-status <%= providers.adbluemedia ? 'on' : 'off' %>"><%= providers.adbluemedia ? 'env OK' : 'env missing' %></span></span>
+        <span>AdBlueMedia <span class="provider-status on">button</span></span>
       </label>
       <label>
         <input type="radio" name="offer_provider" value="ogads" <%= settings.offer_provider === 'ogads' ? 'checked' : '' %>>
-        <span>OGAds <span class="provider-status <%= providers.ogads ? 'on' : 'off' %>"><%= providers.ogads ? 'env OK' : 'env missing' %></span></span>
+        <span>OGAds <span class="provider-status on">button</span></span>
       </label>
-    </div>
-    <div class="form-grid" style="margin-top:20px">
-      <div class="field">
-        <label>Max offers returned</label>
-        <input type="number" name="offer_max" value="<%= settings.offer_max %>" min="1" max="10">
-      </div>
-      <div class="field">
-        <label>Min offers required to unlock</label>
-        <input type="number" name="offer_min" value="<%= settings.offer_min %>" min="1" max="10">
-      </div>
     </div>
   </div>
 

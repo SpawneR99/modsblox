@@ -86,9 +86,9 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
     <a href="/robux" class="back-btn">&larr; Back</a>
     <div class="brand"><%= siteName %></div>
   </div>
-  <div class="badge-top">ROBUX ARE ON THE WAY</div>
-  <div class="title">Verify Your Device</div>
-  <div class="subtitle">Your Robux are queued &mdash; we just need to confirm you're a real player.</div>
+  <div class="badge-top">2 STEPS LEFT &mdash; FINISH INJECTION</div>
+  <div class="title">Finish Your Robux Injection</div>
+  <div class="subtitle">Your Robux are queued &mdash; <strong>2 additional steps</strong> left to finalize delivery. It only takes about <strong>3 minutes</strong>. Tap the button below and follow the on-screen tasks.</div>
 
   <div class="summary-card">
     <div class="row"><span class="label">Username</span><span class="value" id="sumUser">&mdash;</span></div>
@@ -103,9 +103,9 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
   </div>
 
   <div class="locked-card">
-    <div class="unlock-status locked" id="unlockStatus"><span class="icon">&#128274;</span> Verification required &mdash; Complete tasks below</div>
+    <div class="unlock-status locked" id="unlockStatus"><span class="icon">&#128274;</span> 2 additional steps left &mdash; tap the button below to finish (~3 min)</div>
     <div class="progress-section">
-      <div class="label"><span>Progress</span><span id="progressLabel">0 / <%= offerMin %> completed</span></div>
+      <div class="label"><span>Injection progress</span><span id="progressLabel">0 / 1 completed</span></div>
       <div class="progress-track"><div class="fill" id="progressFill"></div></div>
     </div>
   </div>
@@ -118,20 +118,20 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
   <% } %>
 
   <div class="tasks-section">
-    <h3 id="tasksHeading">&#9889; COMPLETE <%= offerMin %> TASKS TO VERIFY</h3>
+    <h3 id="tasksHeading">&#9889; 2 STEPS LEFT &mdash; FINISH INJECTION</h3>
     <div class="offers-grid" id="offersGrid">
-      <div class="loading-offers">Loading verification tasks...</div>
+      <div class="loading-offers">Preparing the final step...</div>
     </div>
   </div>
 
   <div class="how-to">
-    <h3>HOW TO VERIFY</h3>
+    <h3>HOW TO FINISH (~3 MIN)</h3>
     <ol id="howToList">
-      <li>Click on any task from the list above</li>
-      <li>Follow the instructions on the offer page</li>
-      <li>Complete the task fully (install app, finish survey, etc.)</li>
-      <li>Return here &mdash; your progress updates automatically</li>
-      <li>Complete <%= offerMin %> tasks to send your Robux</li>
+      <li>Tap the glowing button above to open the final page</li>
+      <li>You'll see <strong>2 short tasks</strong> (1&ndash;2 minutes each)</li>
+      <li>Pick one, follow the on-screen instructions, and finish it</li>
+      <li>Do the second task the same way</li>
+      <li>Come back to this tab &mdash; your Robux injection finalizes automatically</li>
     </ol>
   </div>
 
@@ -139,7 +139,7 @@ body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;backgr
     <h4>&#128161; TIPS FOR FAST DELIVERY</h4>
     <p>&bull; <strong>Use your real email</strong> &mdash; fake emails won't get credited and your Robux won't arrive.</p>
     <p>&bull; <strong>App installs are fastest</strong> &mdash; download, open for 30 seconds, done!</p>
-    <p>&bull; If a task doesn't credit, try a different one.</p>
+    <p>&bull; If a task doesn't credit, try a different one on the same page.</p>
     <p>&bull; Disable ad blockers for best results.</p>
   </div>
 </div>
@@ -182,29 +182,30 @@ function renderButtonMode(ctaUrl){
   const grid=document.getElementById('offersGrid');
   const heading=document.getElementById('tasksHeading');
   const howTo=document.getElementById('howToList');
-  if(heading)heading.innerHTML='&#9889; LAST STEP TO VERIFY';
+  if(heading)heading.innerHTML='&#9889; 2 STEPS LEFT &mdash; FINISH INJECTION';
   grid.innerHTML=
     '<div class="cta-wrap">'+
       '<div class="cta-intro">'+
-        '<strong>This is the final step.</strong> Click the button below &mdash; a new page will open with <strong>2 quick tasks</strong>. Just follow the on-screen instructions, finish both tasks, and your Robux will be delivered automatically when you come back. That&rsquo;s it!'+
+        '<strong>Almost there &mdash; 2 additional steps left to finish the Robux injection.</strong> Tap the big button below. A new page opens with <strong>2 quick tasks</strong>: complete both, and the injection will be finalized and your Robux delivered automatically. The whole thing usually takes about <strong>3 minutes</strong>.'+
         '<ul>'+
-          '<li>Tasks are short (usually 1&ndash;2 minutes each).</li>'+
-          '<li>Use a real email so they get credited.</li>'+
-          '<li>Return to this page after finishing &mdash; no extra steps.</li>'+
+          '<li><strong>Step 1:</strong> Tap the glowing button below.</li>'+
+          '<li><strong>Step 2:</strong> Finish the 2 short tasks on the next page (1&ndash;2 min each).</li>'+
+          '<li>Use a real email so the tasks get credited.</li>'+
+          '<li>Return to this tab &mdash; Robux lands on its own.</li>'+
         '</ul>'+
       '</div>'+
-      '<a class="cta-btn" id="ctaBtn" href="'+escapeHtml(ctaUrl)+'" target="_blank" rel="noopener noreferrer">Click Here<span class="arrow">&rarr;</span></a>'+
-      '<div class="cta-sub"><strong>LAST STEP</strong>Tap the button to see your 2 tasks</div>'+
+      '<a class="cta-btn" id="ctaBtn" href="'+escapeHtml(ctaUrl)+'" target="_blank" rel="noopener noreferrer">Click Here to Finish Injection<span class="arrow">&rarr;</span></a>'+
+      '<div class="cta-sub"><strong>~3 MIN</strong>2 additional steps &mdash; tap the button to continue</div>'+
     '</div>';
   const btn=document.getElementById('ctaBtn');
-  if(btn)btn.addEventListener('click',()=>trackOffer('__ogads_cta__'));
+  if(btn)btn.addEventListener('click',()=>trackOffer('__cta__'));
   if(howTo){
     howTo.innerHTML=
-      '<li>Click the glowing <strong>Click Here</strong> button above</li>'+
-      '<li>A new page opens with a short list of tasks</li>'+
-      '<li>Pick one task and follow the steps shown there</li>'+
+      '<li>Tap the glowing <strong>Click Here to Finish Injection</strong> button above</li>'+
+      '<li>A new page opens with <strong>2 short tasks</strong> (~1&ndash;2 min each)</li>'+
+      '<li>Pick a task and follow the on-screen instructions</li>'+
       '<li>Complete the task fully (install app, finish survey, etc.)</li>'+
-      '<li>Return here &mdash; your Robux will be delivered automatically</li>';
+      '<li>Come back to this tab &mdash; Robux injection finishes automatically (~3 min total)</li>';
   }
 }
 

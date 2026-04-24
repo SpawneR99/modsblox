@@ -339,8 +339,8 @@ router.get('/settings', (req, res) => {
       video_guide_url: getSetting('video_guide_url', ''),
     },
     providers: {
-      adbluemedia: !!process.env.ADBLUEMEDIA_API_KEY,
-      ogads: !!process.env.OGADS_API_KEY,
+      adbluemedia: true,
+      ogads: true,
     },
   });
 });
